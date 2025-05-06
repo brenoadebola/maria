@@ -1,75 +1,50 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Maria & Breno</title>
-    <style>
-        body {
-            font-family: Comic Sans MS, cursive, sans-serif;
-            background-color: #e6f2ff;
-            text-align: center;
-            margin-top: 50px;
-        }
-        .container {
-            background-color: #ffe6f2;
-            border: 3px double #ff66cc;
-            display: inline-block;
-            padding: 30px;
-            border-radius: 10px;
-        }
-        img {
-            max-width: 200px;
-            margin: 10px;
-            border-radius: 10px;
-        }
-    </style>
-</head>
-<body onload="carregarFotos()">
-    <div class="container">
-        <h1>Maria & Breno</h1>
-        <p id="contador"></p>
-        <p id="frase"></p>
-        <input type="file" id="fileInput" />
-        <div id="galeria"></div>
-    </div>
+import { storage, ref, uploadBytesResumable, getDownloadURL } from './firebase.js';
 
-    <script type="module" src="firebase.js"></script>
-    <script type="module" src="upload.js"></script>
-    <script>
-        const frases = [
-            "estou sendo perturbado pela Maria",
-            "a gente briga por causa do tamanho da coxinha",
-            "até pizza virou desculpa pra me ver",
-            "não teve um dia sem rir dela",
-            "ela é meu caos preferido",
-            "até o céu parece mais bonito com ela",
-            "daria replay em todos nossos momentos",
-            "ela me faz esquecer que o mundo é cruel",
-            "a Maria virou minha rotina favorita",
-            "a vida ficou mais rosa desde então"
-        ];
-        const dataInicial = new Date("2025-04-30T00:00:00");
+document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('fileInput');
+    const galeriaDiv = document.getElementById('galeria');
 
-        function atualizarContador() {
-            const agora = new Date();
-            const diff = agora - dataInicial;
-            const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const horas = agora.getHours();
-            const minutos = agora.getMinutes();
-            const segundos = agora.getSeconds();
-            document.getElementById("contador").innerText =
-                `Estamos juntos há ${dias} dias, ${horas}h ${minutos}m ${segundos}s!`;
-        }
+    fileInput.addEventListener('change', handleFileUpload);
+});
 
-        function fraseAleatoria() {
-            const frase = frases[Math.floor(Math.random() * frases.length)];
-            document.getElementById("frase").innerText =
-                `Desde 30 de abril de 2025 que ${frase}`;
-        }
+async function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const storageRef = ref(storage, `casal/${file.name}`); // 'casal/' é a pasta no Storage
+        const uploadTask = uploadBytesResumable(storageRef, file);
 
-        setInterval(atualizarContador, 1000);
-        atualizarContador();
-        fraseAleatoria();
-    </script>
-</body>
-</html>
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                // Acompanhamento do progresso do upload (opcional)
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload is ' + progress + '% done');
+                switch (snapshot.state) {
+                    case 'paused':
+                        console.log('Upload is paused');
+                        break;
+                    case 'running':
+                        console.log('Upload is running');
+                        break;
+                }
+            },
+            (error) => {
+                // Tratar erros de upload
+                console.error("Erro no upload:", error);
+            },
+            async () => {
+                // Upload concluído com sucesso, obtenha a URL de download
+                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                console.log('File available at', downloadURL);
+                // Aqui você pode adicionar a URL à galeria ou salvar no Firestore
+                adicionarFotoGaleria(downloadURL);
+            }
+        );
+    }
+}
+
+function adicionarFotoGaleria(url) {
+    const galeriaDiv = document.getElementById('galeria');
+    const img = document.createElement('img');
+    img.src = url;
+    galeriaDiv.appendChild(img);
+}
