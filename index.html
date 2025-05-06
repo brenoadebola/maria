@@ -395,7 +395,7 @@
                         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
                         console.log('File available at', downloadURL);
                         adicionarFotoGaleria(downloadURL);
-                        todasFotosCarregadas.push(downloadURL);
+                    
                         renderAlbum();
                     }
                 );
