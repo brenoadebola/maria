@@ -1,50 +1,151 @@
-import { storage, ref, uploadBytesResumable, getDownloadURL } from './firebase.js';
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Maria & Breno</title>
+    <style>
+        body {
+            font-family: Comic Sans MS, cursive, sans-serif;
+            background-color: #e6f2ff;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .container {
+            background-color: #ffe6f2;
+            border: 3px double #ff66cc;
+            display: inline-block;
+            padding: 30px;
+            border-radius: 10px;
+        }
+        #galeria-container {
+            overflow: hidden;
+            width: 300px; /* Ajuste a largura conforme necessário */
+            margin: 20px auto;
+            border-radius: 10px;
+        }
+        #galeria {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        #galeria img {
+            width: 100%;
+            flex-shrink: 0;
+            margin: 5px; /* Adicione margem entre as fotos */
+            border-radius: 5px;
+            max-width: none; /* Remova a restrição de largura */
+            height: auto; /* Mantenha a proporção */
+        }
+        .controle {
+            margin-top: 10px;
+        }
+        .controle button {
+            padding: 8px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border: 1px solid #ff66cc;
+            background-color: #ffe6f2;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body onload="carregarFotos()">
+    <div class="container">
+        <h1>Maria & Breno</h1>
+        <p id="contador"></p>
+        <p id="frase"></p>
+        <input type="file" id="fileInput" />
+        <div id="galeria-container">
+            <div id="galeria">
+                </div>
+        </div>
+        <div class="controle">
+            <button onclick="mudarSlide(-1)">Anterior</button>
+            <button onclick="mudarSlide(1)">Próxima</button>
+        </div>
+    </div>
 
-document.addEventListener('DOMContentLoaded', () => {
-    const fileInput = document.getElementById('fileInput');
-    const galeriaDiv = document.getElementById('galeria');
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="upload.js"></script>
+    <script>
+        const frases = [
+            "estou sendo perturbado pela Maria",
+            "a gente briga por causa do tamanho da coxinha",
+            "até pizza virou desculpa pra me ver",
+            "não teve um dia sem rir dela",
+            "ela é meu caos preferido",
+            "até o céu parece mais bonito com ela",
+            "daria replay em todos nossos momentos",
+            "ela me faz esquecer que o mundo é cruel",
+            "a Maria virou minha rotina favorita",
+            "a vida ficou mais rosa desde então"
+        ];
+        const dataInicial = new Date("2025-04-30T00:00:00");
+        let slideIndex = 0;
+        let fotosCarregadas = [];
 
-    fileInput.addEventListener('change', handleFileUpload);
-});
+        function atualizarContador() {
+            const agora = new Date();
+            const diff = agora - dataInicial;
+            const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const horas = agora.getHours();
+            const minutos = agora.getMinutes();
+            const segundos = agora.getSeconds();
+            document.getElementById("contador").innerText =
+                `Estamos juntos há ${dias} dias, ${horas}h ${minutos}m ${segundos}s!`;
+        }
 
-async function handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const storageRef = ref(storage, `casal/${file.name}`); // 'casal/' é a pasta no Storage
-        const uploadTask = uploadBytesResumable(storageRef, file);
+        function fraseAleatoria() {
+            const frase = frases[Math.floor(Math.random() * frases.length)];
+            document.getElementById("frase").innerText =
+                `Desde 30 de abril de 2025 que ${frase}`;
+        }
 
-        uploadTask.on('state_changed',
-            (snapshot) => {
-                // Acompanhamento do progresso do upload (opcional)
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log('Upload is ' + progress + '% done');
-                switch (snapshot.state) {
-                    case 'paused':
-                        console.log('Upload is paused');
-                        break;
-                    case 'running':
-                        console.log('Upload is running');
-                        break;
-                }
-            },
-            (error) => {
-                // Tratar erros de upload
-                console.error("Erro no upload:", error);
-            },
-            async () => {
-                // Upload concluído com sucesso, obtenha a URL de download
-                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                console.log('File available at', downloadURL);
-                // Aqui você pode adicionar a URL à galeria ou salvar no Firestore
-                adicionarFotoGaleria(downloadURL);
+        function adicionarFotoGaleria(url) {
+            const galeriaDiv = document.getElementById('galeria');
+            const img = document.createElement('img');
+            img.src = url;
+            galeriaDiv.appendChild(img);
+            fotosCarregadas.push(url);
+            atualizarCarrossel();
+        }
+
+        function atualizarCarrossel() {
+            const galeria = document.getElementById('galeria');
+            const larguraFoto = document.querySelector('#galeria img')?.offsetWidth || 300; // Largura da foto ou padrão
+            galeria.style.transform = `translateX(-${slideIndex * larguraFoto}px)`;
+        }
+
+        function mudarSlide(n) {
+            slideIndex += n;
+            if (slideIndex < 0) {
+                slideIndex = fotosCarregadas.length - 1;
+            } else if (slideIndex >= fotosCarregadas.length) {
+                slideIndex = 0;
             }
-        );
-    }
-}
+            atualizarCarrossel();
+        }
 
-function adicionarFotoGaleria(url) {
-    const galeriaDiv = document.getElementById('galeria');
-    const img = document.createElement('img');
-    img.src = url;
-    galeriaDiv.appendChild(img);
-}
+        async function carregarFotos() {
+            const { storage, ref, listAll, getDownloadURL } = await import('./firebase.js');
+            const storageRef = ref(storage, 'casal');
+
+            try {
+                const res = await listAll(storageRef);
+                res.items.forEach(async (itemRef) => {
+                    const url = await getDownloadURL(itemRef);
+                    adicionarFotoGaleria(url);
+                });
+            } catch (error) {
+                console.error("Erro ao carregar fotos:", error);
+            }
+        }
+
+        setInterval(atualizarContador, 1000);
+        atualizarContador();
+        fraseAleatoria();
+
+        // Carregar fotos existentes ao carregar a página
+        // A função carregarFotos() já está sendo chamada no onload do body
+    </script>
+</body>
+</html>
