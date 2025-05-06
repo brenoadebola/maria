@@ -3,26 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Maria & Breno</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             font-family: Comic Sans MS, cursive, sans-serif;
             background-color: #e6f2ff;
             text-align: center;
-            margin-top: 50px;
+            margin-top: 20px; /* Reduzi a margem superior em telas menores */
+            margin-bottom: 20px; /* Adicionei margem inferior */
         }
         .container {
             background-color: #ffe6f2;
             border: 3px double #ff66cc;
-            display: inline-block;
-            padding: 30px;
+            padding: 20px; /* Reduzi o padding em telas menores */
             border-radius: 10px;
+            display: flex;
+            flex-direction: column; /* Empilha os elementos verticalmente em telas menores */
+            align-items: center; /* Centraliza os itens horizontalmente */
+            max-width: 95%; /* Largura máxima para evitar quebrar em telas pequenas */
+            margin: 10px auto; /* Centraliza o container e adiciona margem */
+        }
+        h1 {
+            font-size: 2em; /* Reduzi o tamanho da fonte em telas menores */
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        p {
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
         #galeria-container {
             overflow: hidden;
-            width: 300px; /* Largura inicial do container */
+            width: 90%; /* Largura da galeria em telas menores */
+            max-width: 400px; /* Largura máxima da galeria */
             margin: 20px auto;
             border-radius: 10px;
-            position: relative; /* Para posicionar os controles */
+            position: relative;
         }
         #galeria {
             display: flex;
@@ -32,10 +48,10 @@
             flex-shrink: 0;
             margin: 5px;
             border-radius: 5px;
-            max-width: none; /* Remove restrição de largura */
-            height: auto; /* Mantém a proporção */
-            width: 100%; /* Cada imagem ocupa a largura do container */
-            object-fit: contain; /* Ajusta a imagem dentro do container sem cortar, com espaços se necessário */
+            max-width: none;
+            height: auto;
+            width: 100%;
+            object-fit: contain;
         }
         .controle {
             position: absolute;
@@ -48,19 +64,18 @@
         }
         .controle button {
             padding: 8px 12px;
-            font-size: 20px; /* Tamanho das setas */
+            font-size: 20px;
             cursor: pointer;
             border: none;
-            background-color: rgba(255, 102, 204, 0.7); /* Fundo semi-transparente */
+            background-color: rgba(255, 102, 204, 0.7);
             color: white;
             border-radius: 5px;
             transition: background-color 0.3s ease;
-            line-height: 1; /* Ajusta o alinhamento vertical */
+            line-height: 1;
         }
         .controle button:hover {
             background-color: rgba(255, 102, 204, 0.9);
         }
-        /* Estilo para o input de arquivo (agora abaixo) */
         .upload-container {
             margin: 20px auto;
             padding: 15px;
@@ -69,7 +84,7 @@
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            width: 80%; /* Ajuste a largura conforme necessário */
+            width: 80%;
             max-width: 300px;
         }
         .upload-container:hover {
@@ -81,7 +96,23 @@
             color: #ff66cc;
         }
         #fileInput {
-            display: none; /* Oculta o input padrão */
+            display: none;
+        }
+        /* Estilos específicos para telas menores (até 600px de largura) */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            .container {
+                padding: 15px;
+            }
+            #galeria-container {
+                width: 95%;
+            }
+            .controle button {
+                padding: 5px 8px;
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -90,6 +121,7 @@
         <h1>Maria & Breno</h1>
         <p id="contador"></p>
         <p id="frase"></p>
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/25ZLH7Wt5zJcjnUXkKJueB?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         <div id="galeria-container">
             <div id="galeria">
                 </div>
