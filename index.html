@@ -1,481 +1,931 @@
 <!DOCTYPE html>
+
 <html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Maria & Breno</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Comic Sans MS, sans-serif;
-            background-color: #e6f2ff;
-            text-align: center;
-            margin: 0;
-            padding-top: 20px;
-            margin-bottom: 60px; /* Espaço para o container de todas as fotos */
-        }
-        .container {
-            background-color: #ffe6f2;
-            border: 3px double #ff66cc;
-            padding: 20px;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 95%;
-            margin: 20px auto;
-        }
-        h1 {
-            font-size: 2em;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-        p {
-            margin-top: 5px;
-            margin-bottom: 5px;
-        }
-        #galeria-container {
-            overflow: hidden;
-            width: 90%;
-            max-width: 400px;
-            margin: 20px auto;
-            border-radius: 10px;
-            position: relative;
-        }
-        #galeria {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-        }
-        #galeria img {
-            flex-shrink: 0;
-            margin: 5px;
-            border-radius: 5px;
-            max-width: none;
-            height: auto;
-            width: 100%;
-            object-fit: contain;
-        }
-        .controle {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 10px;
-        }
-        .controle button {
-            padding: 8px 12px;
-            font-size: 20px;
-            cursor: pointer;
-            border: none;
-            background-color: rgba(255, 102, 204, 0.7);
-            color: white;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-            line-height: 1;
-        }
-        .controle button:hover {
-            background-color: rgba(255, 102, 204, 0.9);
-        }
-        .upload-container {
-            margin: 20px auto;
-            padding: 15px;
-            background-color: #ffcce6;
-            border: 2px dashed #ff66cc;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 80%;
-            max-width: 300px;
-        }
-        .upload-container:hover {
-            background-color: #ffb3d9;
-        }
-        .upload-icon {
-            font-size: 24px;
-            margin-bottom: 5px;
-            color: #ff66cc;
-        }
-        #fileInput {
-            display: none;
-        }
-        /* Container para todas as fotos */
-        .all-photos-container {
-            background-color: #ffe6f2;
-            border: 3px double #ff66cc;
-            padding: 20px;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 95%;
-            margin: 20px auto;
-        }
-        #all-photos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            width: 90%;
-            max-width: 800px;
-            margin-top: 10px;
-        }
-        .photo-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .photo-item img {
-            width: 100%;
-            height: auto;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: transform 0.3s ease-in-out;
-            object-fit: cover;
-            margin-bottom: 5px;
-        }
-        .photo-item img:hover {
-            transform: scale(1.05);
-        }
-        .remove-button {
-            padding: 8px 12px;
-            font-size: 0.9em;
-            cursor: pointer;
-            border: none;
-            background-color: #ff66cc;
-            color: white;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-        .remove-button:hover {
-            background-color: #ffb3d9;
-        }
-        /* Modal para opções da foto */
-        .photo-options-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .photo-options-content {
-            background-color: #ffe6f2;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            border: 2px solid #ff66cc;
-        }
-        .photo-options-content img {
-            max-width: 90%;
-            max-height: 80vh;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        .photo-options-content button {
-            padding: 10px 15px;
-            font-size: 1em;
-            cursor: pointer;
-            border: none;
-            background-color: #ff66cc;
-            color: white;
-            border-radius: 5px;
-            margin: 5px;
-            transition: background-color 0.3s ease;
-        }
-        .photo-options-content button:hover {
-            background-color: #ffb3d9;
-        }
-        /* Estilos para telas menores */
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 1.5em;
-            }
-            .container {
-                padding: 15px;
-            }
-            #galeria-container {
-                width: 95%;
-            }
-            .controle button {
-                padding: 5px 8px;
-                font-size: 16px;
-            }
-            #all-photos-grid {
-                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            }
-            .remove-button {
-                font-size: 0.8em;
-                padding: 5px 8px;
-            }
-        }
-    </style>
+
+    <meta charset="UTF-8">
+
+    <title>Maria & Breno</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+
+        body {
+
+            font-family: Comic Sans MS, sans-serif;
+
+            background-color: #e6f2ff;
+
+            text-align: center;
+
+            margin: 0;
+
+            padding-top: 20px;
+
+            margin-bottom: 60px; /* Espaço para o container de todas as fotos */
+
+        }
+
+        .container {
+
+            background-color: #ffe6f2;
+
+            border: 3px double #ff66cc;
+
+            padding: 20px;
+
+            border-radius: 10px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            max-width: 95%;
+
+            margin: 20px auto;
+
+        }
+
+        h1 {
+
+            font-size: 2em;
+
+            margin-top: 10px;
+
+            margin-bottom: 10px;
+
+        }
+
+        p {
+
+            margin-top: 5px;
+
+            margin-bottom: 5px;
+
+        }
+
+        #galeria-container {
+
+            overflow: hidden;
+
+            width: 90%;
+
+            max-width: 400px;
+
+            margin: 20px auto;
+
+            border-radius: 10px;
+
+            position: relative;
+
+        }
+
+        #galeria {
+
+            display: flex;
+
+            transition: transform 0.5s ease-in-out;
+
+        }
+
+        #galeria img {
+
+            flex-shrink: 0;
+
+            margin: 5px;
+
+            border-radius: 5px;
+
+            max-width: none;
+
+            height: auto;
+
+            width: 100%;
+
+            object-fit: contain;
+
+        }
+
+        .controle {
+
+            position: absolute;
+
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            width: 100%;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            padding: 0 10px;
+
+        }
+
+        .controle button {
+
+            padding: 8px 12px;
+
+            font-size: 20px;
+
+            cursor: pointer;
+
+            border: none;
+
+            background-color: rgba(255, 102, 204, 0.7);
+
+            color: white;
+
+            border-radius: 5px;
+
+            transition: background-color 0.3s ease;
+
+            line-height: 1;
+
+        }
+
+        .controle button:hover {
+
+            background-color: rgba(255, 102, 204, 0.9);
+
+        }
+
+        .upload-container {
+
+            margin: 20px auto;
+
+            padding: 15px;
+
+            background-color: #ffcce6;
+
+            border: 2px dashed #ff66cc;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            transition: background-color 0.3s ease;
+
+            width: 80%;
+
+            max-width: 300px;
+
+        }
+
+        .upload-container:hover {
+
+            background-color: #ffb3d9;
+
+        }
+
+        .upload-icon {
+
+            font-size: 24px;
+
+            margin-bottom: 5px;
+
+            color: #ff66cc;
+
+        }
+
+        #fileInput {
+
+            display: none;
+
+        }
+
+        /* Container para todas as fotos */
+
+        .all-photos-container {
+
+            background-color: #ffe6f2;
+
+            border: 3px double #ff66cc;
+
+            padding: 20px;
+
+            border-radius: 10px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            max-width: 95%;
+
+            margin: 20px auto;
+
+        }
+
+        #all-photos-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+
+            gap: 10px;
+
+            width: 90%;
+
+            max-width: 800px;
+
+            margin-top: 10px;
+
+        }
+
+        .photo-item {
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+        }
+
+        .photo-item img {
+
+            width: 100%;
+
+            height: auto;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            transition: transform 0.3s ease-in-out;
+
+            object-fit: cover;
+
+            margin-bottom: 5px;
+
+        }
+
+        .photo-item img:hover {
+
+            transform: scale(1.05);
+
+        }
+
+        .remove-button {
+
+            padding: 8px 12px;
+
+            font-size: 0.9em;
+
+            cursor: pointer;
+
+            border: none;
+
+            background-color: #ff66cc;
+
+            color: white;
+
+            border-radius: 5px;
+
+            transition: background-color 0.3s ease;
+
+        }
+
+        .remove-button:hover {
+
+            background-color: #ffb3d9;
+
+        }
+
+        /* Modal para opções da foto */
+
+        .photo-options-modal {
+
+            display: none;
+
+            position: fixed;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            background-color: rgba(0, 0, 0, 0.8);
+
+            justify-content: center;
+
+            align-items: center;
+
+            z-index: 1000;
+
+        }
+
+        .photo-options-content {
+
+            background-color: #ffe6f2;
+
+            padding: 20px;
+
+            border-radius: 8px;
+
+            text-align: center;
+
+            border: 2px solid #ff66cc;
+
+        }
+
+        .photo-options-content img {
+
+            max-width: 90%;
+
+            max-height: 80vh;
+
+            border-radius: 5px;
+
+            margin-bottom: 10px;
+
+        }
+
+        .photo-options-content button {
+
+            padding: 10px 15px;
+
+            font-size: 1em;
+
+            cursor: pointer;
+
+            border: none;
+
+            background-color: #ff66cc;
+
+            color: white;
+
+            border-radius: 5px;
+
+            margin: 5px;
+
+            transition: background-color 0.3s ease;
+
+        }
+
+        .photo-options-content button:hover {
+
+            background-color: #ffb3d9;
+
+        }
+
+        /* Estilos para telas menores */
+
+        @media (max-width: 600px) {
+
+            h1 {
+
+                font-size: 1.5em;
+
+            }
+
+            .container {
+
+                padding: 15px;
+
+            }
+
+            #galeria-container {
+
+                width: 95%;
+
+            }
+
+            .controle button {
+
+                padding: 5px 8px;
+
+                font-size: 16px;
+
+            }
+
+            #all-photos-grid {
+
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+
+            }
+
+            .remove-button {
+
+                font-size: 0.8em;
+
+                padding: 5px 8px;
+
+            }
+
+        }
+
+    </style>
+
 </head>
+
 <body>
-    <div class="container">
-        <h1>Maria & Breno</h1>
-        <p id="contador"></p>
-        <p id="contadorBeijo"></p>
-        <p id="frase"></p>
-        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/25ZLH7Wt5zJcjnUXkKJueB?utm_source=generator" width="100%" height="152" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        <div id="galeria-container">
-            <div id="galeria">
-                </div>
-            <div class="controle">
-                <button onclick="mudarSlide(-1)">⬅️</button>
-                <button onclick="mudarSlide(1)">➡️</button>
-            </div>
-        </div>
-        <div class="upload-container" onclick="document.getElementById('fileInput').click();">
-            <div style="text-align: center;">
-                <span class="upload-icon">⬆️</span><br>
-                Clique aqui para escolher uma foto
-            </div>
-            <input type="file" id="fileInput" onchange="window.handleFileUpload(event)" accept="image/*"/>
-        </div>
-    </div>
 
-    <div class="all-photos-container">
-        <h1>Todas as Fotos</h1>
-        <div id="all-photos-grid">
-            </div>
-    </div>
+    <div class="container">
 
-    <div class="photo-options-modal" id="photo-options-modal">
-        <div class="photo-options-content">
-            <img id="modal-image" src="#" alt="Foto em tela cheia">
-            <button onclick="showFullscreen()">Tela Cheia</button>
-            <button onclick="closeModal()">Fechar</button>
-        </div>
-    </div>
+        <h1>Maria & Breno</h1>
 
-    <script type="module">
-        // Importe as funções que você precisa dos SDKs que você usa
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL, listAll, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        <p id="contador"></p>
 
-        // Sua configuração do Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyAv3g3-Gjp2OYLNG3PgVczwBFSQXAxcDj0",
-            authDomain: "maria-18e7a.firebaseapp.com",
-            projectId: "maria-18e7a",
-            storageBucket: "maria-18e7a.firebasestorage.app",
-            messagingSenderId: "187919316652",
-            appId: "1:187919316652:web:153b6f5758859e14f25109"
-        };
+        <p id="contadorBeijo"></p>
 
-        // Inicialize o Firebase
-        const app = initializeApp(firebaseConfig);
+        <p id="frase"></p>
 
-        // Inicialize o Firebase Storage
-        const storage = getStorage(app);
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/25ZLH7Wt5zJcjnUXkKJueB?utm_source=generator" width="100%" height="152" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 
-        // Exporte as funções para o escopo global (window)
-        window.storage = storage;
-        window.ref = ref;
-        window.uploadBytesResumable = uploadBytesResumable;
-        window.getDownloadURL = getDownloadURL;
-        window.listAll = listAll;
-        window.deleteObject = deleteObject;
+        <div id="galeria-container">
 
-        const frases = [
-            "estou sendo perturbado pela Maria",
-            "a gente briga por causa do tamanho da coxinha",
-            "até pizza virou desculpa pra me ver",
-            "não teve um dia sem rir dela",
-            "ela é meu caos preferido",
-            "até o céu parece mais bonito com ela",
-            "daria replay em todos nossos momentos",
-            "ela me faz esquecer que o mundo é cruel",
-            "a Maria virou minha rotina favorita",
-            "a vida ficou mais rosa desde então"
-        ];
-        const dataInicial = new Date("2025-04-30T00:00:00");
-        const dataBeijo = new Date("2024-07-05T00:00:00");
-        let slideIndex = 0;
-        let fotosCarregadas = [];
-        let todasFotosCarregadas = [];
-        let currentPhotoUrl;
-        const allPhotosGrid = document.getElementById('all-photos-grid');
-        const photoOptionsModal = document.getElementById('photo-options-modal');
-        const modalImage = document.getElementById('modal-image');
-        let currentPhotoUrlToRemove;
+            <div id="galeria">
 
-        function atualizarContador() {
-            const agora = new Date();
-            const diff = agora - dataInicial;
-            const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const horas = agora.getHours();
-            const minutos = agora.getMinutes();
-            const segundos = agora.getSeconds();
-            document.getElementById("contador").innerText =
-                `Estamos juntos há ${dias} dias, ${horas}h ${minutos}m ${segundos}s!`;
-        }
+                </div>
 
-        function atualizarContadorBeijo() {
-            const agora = new Date();
-            const diffBeijo = agora - dataBeijo;
-            const diasBeijo = Math.floor(diffBeijo / (1000 * 60 * 60 * 24));
-            document.getElementById("contadorBeijo").innerText =
-                `Nosso primeiro beijo foi há ${diasBeijo} dias!`;
-        }
+            <div class="controle">
 
-        function fraseAleatoria() {
-            const frase = frases[Math.floor(Math.random() * frases.length)];
-            document.getElementById("frase").innerText =
-                `Desde 30 de abril de 2025 que ${frase}`;
-        }
+                <button onclick="mudarSlide(-1)">⬅️</button>
 
-        function adicionarFotoGaleria(url) {
-            const galeriaDiv = document.getElementById('galeria');
-            const img = document.createElement('img');
-            img.src = url;
-            galeriaDiv.appendChild(img);
-            fotosCarregadas.push(url);
-            todasFotosCarregadas.push(url);
-            atualizarCarrossel();
-        }
+                <button onclick="mudarSlide(1)">➡️</button>
 
-        function atualizarCarrossel() {
-            const galeria = document.getElementById('galeria');
-            const larguraContainer = document.getElementById('galeria-container').offsetWidth;
-            galeria.style.transform = `translateX(-${slideIndex * larguraContainer}px)`;
-        }
+            </div>
 
-        window.mudarSlide = function mudarSlide(n) {
-            slideIndex += n;
-            if (slideIndex < 0) {
-                slideIndex = fotosCarregadas.length - 1;
-            } else if (slideIndex >= fotosCarregadas.length) {
-                slideIndex = 0;
-            }
-            atualizarCarrossel();
-        }
-        window.carregarFotos = async function carregarFotos() {
-            const storageRef = ref(window.storage, 'casal');
-            try {
-                const res = await listAll(storageRef);
-                const urls = await Promise.all(res.items.map(itemRef => getDownloadURL(itemRef)));
-                urls.forEach(url => {
-                    adicionarFotoGaleria(url);
-                });
+        </div>
+
+        <div class="upload-container" onclick="document.getElementById('fileInput').click();">
+
+            <div style="text-align: center;">
+
+                <span class="upload-icon">⬆️</span><br>
+
+                Clique aqui para escolher uma foto
+
+            </div>
+
+            <input type="file" id="fileInput" onchange="handleFileUpload(event)" accept="image/*"/>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="all-photos-container">
+
+        <h1>Todas as Fotos</h1>
+
+        <div id="all-photos-grid">
+
+            </div>
+
+    </div>
+
+
+
+    <div class="photo-options-modal" id="photo-options-modal">
+
+        <div class="photo-options-content">
+
+            <img id="modal-image" src="#" alt="Foto em tela cheia">
+
+            <button onclick="showFullscreen()">Tela Cheia</button>
+
+            <button onclick="closeModal()">Fechar</button>
+
+        </div>
+
+    </div>
+
+
+
+    <script type="module">
+
+        // Importe as funções que você precisa dos SDKs que você usa
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, listAll, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+
+
+        // Sua configuração do Firebase
+
+        const firebaseConfig = {
+
+          apiKey: "AIzaSyAv3g3-Gjp2OYLNG3PgVczwBFSQXAxcDj0",
+
+          authDomain: "maria-18e7a.firebaseapp.com",
+
+          projectId: "maria-18e7a",
+
+          storageBucket: "maria-18e7a.firebasestorage.app",
+
+          messagingSenderId: "187919316652",
+
+          appId: "1:187919316652:web:153b6f5758859e14f25109"
+
+        };
+
+
+
+        // Inicialize o Firebase
+
+        const app = initializeApp(firebaseConfig);
+
+
+
+        // Inicialize o Firebase Storage
+
+        const storage = getStorage(app);
+
+
+
+        // Exporte as funções para o escopo global (window)
+
+        window.storage = storage;
+
+        window.ref = ref;
+
+        window.uploadBytesResumable = uploadBytesResumable;
+
+        window.getDownloadURL = getDownloadURL;
+
+        window.listAll = listAll;
+
+        window.deleteObject = deleteObject;
+
+
+
+        const frases = [
+
+            "estou sendo perturbado pela Maria",
+
+            "a gente briga por causa do tamanho da coxinha",
+
+            "até pizza virou desculpa pra me ver",
+
+            "não teve um dia sem rir dela",
+
+            "ela é meu caos preferido",
+
+            "até o céu parece mais bonito com ela",
+
+            "daria replay em todos nossos momentos",
+
+            "ela me faz esquecer que o mundo é cruel",
+
+            "a Maria virou minha rotina favorita",
+
+            "a vida ficou mais rosa desde então"
+
+        ];
+
+        const dataInicial = new Date("2025-04-30T00:00:00");
+
+        const dataBeijo = new Date("2024-07-05T00:00:00");
+
+        let slideIndex = 0;
+
+        let fotosCarregadas = [];
+
+        let todasFotosCarregadas = [];
+
+        let currentPhotoUrl;
+
+        const allPhotosGrid = document.getElementById('all-photos-grid');
+
+        const photoOptionsModal = document.getElementById('photo-options-modal');
+
+        const modalImage = document.getElementById('modal-image');
+
+        let currentPhotoUrlToRemove;
+
+
+
+        function atualizarContador() {
+
+            const agora = new Date();
+
+            const diff = agora - dataInicial;
+
+            const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+            const horas = agora.getHours();
+
+            const minutos = agora.getMinutes();
+
+            const segundos = agora.getSeconds();
+
+            document.getElementById("contador").innerText =
+
+                `Estamos juntos há ${dias} dias, ${horas}h ${minutos}m ${segundos}s!`;
+
+        }
+
+
+
+        function atualizarContadorBeijo() {
+
+            const agora = new Date();
+
+            const diffBeijo = agora - dataBeijo;
+
+            const diasBeijo = Math.floor(diffBeijo / (1000 * 60 * 60 * 24));
+
+            document.getElementById("contadorBeijo").innerText =
+
+                `Nosso primeiro beijo foi há ${diasBeijo} dias!`;
+
+        }
+
+
+
+        function fraseAleatoria() {
+
+            const frase = frases[Math.floor(Math.random() * frases.length)];
+
+            document.getElementById("frase").innerText =
+
+                `Desde 30 de abril de 2025 que ${frase}`;
+
+        }
+
+
+
+        function adicionarFotoGaleria(url) {
+
+            const galeriaDiv = document.getElementById('galeria');
+
+            const img = document.createElement('img');
+
+            img.src = url;
+
+            galeriaDiv.appendChild(img);
+
+            fotosCarregadas.push(url);
+
+            todasFotosCarregadas.push(url);
+
+            atualizarCarrossel();
+
+        }
+
+
+
+        function atualizarCarrossel() {
+
+            const galeria = document.getElementById('galeria');
+
+            const larguraContainer = document.getElementById('galeria-container').offsetWidth;
+
+            galeria.style.transform = `translateX(-${slideIndex * larguraContainer}px)`;
+
+        }
+
+
+
+      window.mudarSlide = function mudarSlide(n) {
+
+    slideIndex += n;
+
+    if (slideIndex < 0) {
+
+        slideIndex = fotosCarregadas.length - 1;
+
+    } else if (slideIndex >= fotosCarregadas.length) {
+
+        slideIndex = 0;
+
+    }
+
+    atualizarCarrossel();
+
+}
+
+        window.carregarFotos = async function carregarFotos() {
+
+            const storageRef = ref(window.storage, 'casal');
+
+            try {
+
+                const res = await listAll(storageRef);
+
+                const urls = await Promise.all(res.items.map(itemRef => getDownloadURL(itemRef)));
+
+                urls.forEach(url => {
+
+                    adicionarFotoGaleria(url);
+
+                    todasFotosCarregadas.push(url);
+
+                });
+
+                renderAlbum();
+
+            } catch (error) {
+
+                console.error("Erro ao carregar fotos:", error);
+
+            }
+
+        }
+
+
+
+      window.handleFileUpload = async function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const storageRef = ref(window.storage, `casal/${file.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload is ' + progress + '% done');
+                switch (snapshot.state) {
+                    case 'paused':
+                        console.log('Upload is paused');
+                        break;
+                    case 'running':
+                        console.log('Upload is running');
+                        break;
+                }
+            },
+            (error) => {
+                console.error("Erro no upload:", error);
+            },
+            async () => {
+                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                console.log('File available at', downloadURL);
+                adicionarFotoGaleria(downloadURL);
                 renderAlbum();
-            } catch (error) {
-                console.error("Erro ao carregar fotos:", error);
             }
-        }
+        );
+    }
+}
 
-        window.handleFileUpload = async function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const storageRef = ref(window.storage, `casal/${file.name}`);
-                const uploadTask = uploadBytesResumable(storageRef, file);
 
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        console.log('Upload is ' + progress + '% done');
-                        switch (snapshot.state) {
-                            case 'paused':
-                                console.log('Upload is paused');
-                                break;
-                            case 'running':
-                                console.log('Upload is running');
-                                break;
-                        }
-                    },
-                    (error) => {
-                        console.error("Erro no upload:", error);
-                    },
-                    async () => {
-                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                        console.log('File available at', downloadURL);
-                        adicionarFotoGaleria(downloadURL);
-                        renderAlbum();
-                    }
-                );
-            }
-        }
 
-        function renderAlbum() {
-            allPhotosGrid.innerHTML = '';
-            todasFotosCarregadas.forEach(url => {
-                const photoItem = document.createElement('div');
-                photoItem.classList.add('photo-item');
+        function renderAlbum() {
 
-                const img = document.createElement('img');
-                img.src = url;
-                img.onclick = () => showPhotoOptions(url);
+            allPhotosGrid.innerHTML = '';
 
-                const removeButton = document.createElement('button');
-                removeButton.textContent = 'Remover';
-                removeButton.classList.add('remove-button');
-                removeButton.onclick = () => confirmRemove(url);
+            todasFotosCarregadas.forEach(url => {
 
-                photoItem.appendChild(img);
-                photoItem.appendChild(removeButton);
-                allPhotosGrid.appendChild(photoItem);
-            });
-        }
+                const photoItem = document.createElement('div');
 
-        function confirmRemove(url) {
-            currentPhotoUrlToRemove = url;
-            const imageName = url.split('/').pop().split('?')[0];
-            if (confirm(`Tem certeza que deseja remover a foto"${imageName}"?`)) {
+                photoItem.classList.add('photo-item');
+
+
+
+                const img = document.createElement('img');
+
+                img.src = url;
+
+                img.onclick = () => showPhotoOptions(url);
+
+
+
+                const removeButton = document.createElement('button');
+
+                removeButton.textContent = 'Remover';
+
+                removeButton.classList.add('remove-button');
+
+                removeButton.onclick = () => confirmRemove(url);
+
+
+
+                photoItem.appendChild(img);
+
+                photoItem.appendChild(removeButton);
+
+                allPhotosGrid.appendChild(photoItem);
+
+            });
+
+        }
+
+
+
+        function confirmRemove(url) {
+
+            currentPhotoUrlToRemove = url;
+
+            const imageName = url.split('/').pop().split('?')[0];
+
+            if (confirm(`Tem certeza que deseja remover a foto "${imageName}"?`)) {
+
                 removerFoto(url);
+
             }
+
         }
 
-function showPhotoOptions(url) {
+
+
+        function showPhotoOptions(url) {
+
             currentPhotoUrl = url;
+
             modalImage.src = url;
+
             photoOptionsModal.style.display = 'flex';
+
         }
 
-function closeModal() {
+
+
+        function closeModal() {
+
             photoOptionsModal.style.display = 'none';
+
         }
 
-function showFullscreen() {
+
+
+        function showFullscreen() {
+
             window.open(currentPhotoUrl, '_blank');
+
         }
 
-async function removerFoto(urlToRemove) {
+
+
+        async function removerFoto(urlToRemove) {
+
             if (urlToRemove) {
-                const imageName = urlToRemove.split('/').pop().split('?')[0];
-                const imageRef = ref(storage, casal/${imageName});
 
-try {
+                const imageName = urlToRemove.split('/').pop().split('?')[0];
+
+                const imageRef = ref(storage, `casal/${imageName}`);
+
+
+
+                try {
+
                     await deleteObject(imageRef);
-                    console.log(Foto ${imageName} removida com sucesso.);
+
+                    console.log(`Foto ${imageName} removida com sucesso.`);
+
                     todasFotosCarregadas = todasFotosCarregadas.filter(url => url !== urlToRemove);
+
                     fotosCarregadas = fotosCarregadas.filter(url => url !== urlToRemove);
+
                     renderAlbum(); // Atualiza a exibição de todas as fotos
+
                     atualizarCarrossel(); // Atualiza o carrossel da tela inicial
+
                     if (currentPhotoUrl === urlToRemove) {
+
                         closeModal(); // Fecha o modal se a foto removida estiver aberta
+
                     }
+
                     currentPhotoUrlToRemove = null;
+
                 } catch (error) {
+
                     console.error("Erro ao remover foto:", error);
+
                     alert("Ocorreu um erro ao remover a foto.");
+
                 }
+
             }
+
         }
 
-document.addEventListener('DOMContentLoaded', () => {
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+
             carregarFotos();
+
         });
 
-setInterval(atualizarContador, 1000);
-        setInterval(atualizarContadorBeijo, 60000);
-        atualizarContador();
-        atualizarContadorBeijo();
-        fraseAleatoria();
-    &lt;/script>
 
-&lt;/body>
-&lt;/html>
+
+        setInterval(atualizarContador, 1000);
+
+        setInterval(atualizarContadorBeijo, 60000);
+
+        atualizarContador();
+
+        atualizarContadorBeijo();
+
+        fraseAleatoria();
+
+    </script>
+
+</body>
+
+</html>
