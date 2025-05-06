@@ -66,7 +66,9 @@
 
     <script type="module" src="firebase.js"></script>
     <script type="module" src="upload.js"></script>
-    <script>
+    <script type="module">
+        import { storage, ref, listAll, getDownloadURL } from './firebase.js';
+
         const frases = [
             "estou sendo perturbado pela Maria",
             "a gente briga por causa do tamanho da coxinha",
@@ -126,7 +128,6 @@
         }
 
         async function carregarFotos() {
-            const { storage, ref, listAll, getDownloadURL } = await import('./firebase.js');
             const storageRef = ref(storage, 'casal');
 
             try {
