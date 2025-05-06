@@ -17,34 +17,70 @@
             padding: 30px;
             border-radius: 10px;
         }
+        /* Estilo para o input de arquivo */
+        .upload-container {
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #ffcce6;
+            border: 2px dashed #ff66cc;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 80%; /* Ajuste a largura conforme necessário */
+            max-width: 300px;
+        }
+        .upload-container:hover {
+            background-color: #ffb3d9;
+        }
+        .upload-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: #ff66cc;
+        }
+        #fileInput {
+            display: none; /* Oculta o input padrão */
+        }
         #galeria-container {
             overflow: hidden;
-            width: 300px; /* Ajuste a largura conforme necessário */
+            width: 300px; /* Largura inicial do container */
             margin: 20px auto;
             border-radius: 10px;
+            position: relative; /* Para posicionar os controles */
         }
         #galeria {
             display: flex;
             transition: transform 0.5s ease-in-out;
         }
         #galeria img {
-            width: 100%;
             flex-shrink: 0;
-            margin: 5px; /* Adicione margem entre as fotos */
+            margin: 5px;
             border-radius: 5px;
-            max-width: none; /* Remova a restrição de largura */
-            height: auto; /* Mantenha a proporção */
+            max-width: none; /* Remove restrição de largura */
+            height: auto; /* Mantém a proporção */
+            width: 100%; /* Cada imagem ocupa a largura do container */
+            object-fit: contain; /* Ajusta a imagem dentro do container sem cortar, com espaços se necessário */
         }
         .controle {
-            margin-top: 10px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
         }
         .controle button {
             padding: 8px 15px;
             font-size: 16px;
             cursor: pointer;
-            border: 1px solid #ff66cc;
-            background-color: #ffe6f2;
+            border: none;
+            background-color: rgba(255, 102, 204, 0.7); /* Fundo semi-transparente */
+            color: white;
             border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .controle button:hover {
+            background-color: rgba(255, 102, 204, 0.9);
         }
     </style>
 </head>
@@ -53,14 +89,20 @@
         <h1>Maria & Breno</h1>
         <p id="contador"></p>
         <p id="frase"></p>
-        <input type="file" id="fileInput" />
+        <div class="upload-container" onclick="document.getElementById('fileInput').click();">
+            <div style="text-align: center;">
+                <span class="upload-icon">⬆️</span><br>
+                Clique aqui para escolher uma foto
+            </div>
+            <input type="file" id="fileInput" onchange="handleFileUpload(event)" accept="image/*"/>
+        </div>
         <div id="galeria-container">
             <div id="galeria">
                 </div>
-        </div>
-        <div class="controle">
-            <button onclick="mudarSlide(-1)">Anterior</button>
-            <button onclick="mudarSlide(1)">Próxima</button>
+            <div class="controle">
+                <button onclick="mudarSlide(-1)">Anterior</button>
+                <button onclick="mudarSlide(1)">Próxima</button>
+            </div>
         </div>
     </div>
 
@@ -136,8 +178,8 @@
 
         function atualizarCarrossel() {
             const galeria = document.getElementById('galeria');
-            const larguraFoto = document.querySelector('#galeria img')?.offsetWidth || 300;
-            galeria.style.transform = `translateX(-${slideIndex * larguraFoto}px)`;
+            const larguraContainer = document.getElementById('galeria-container').offsetWidth;
+            galeria.style.transform = `translateX(-${slideIndex * larguraContainer}px)`;
         }
 
       window.mudarSlide = function mudarSlide(n) {
@@ -195,7 +237,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const fileInput = document.getElementById('fileInput');
-            fileInput.addEventListener('change', handleFileUpload);
         });
 
         setInterval(atualizarContador, 1000);
