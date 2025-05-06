@@ -17,29 +17,6 @@
             padding: 30px;
             border-radius: 10px;
         }
-        /* Estilo para o input de arquivo */
-        .upload-container {
-            margin: 20px auto;
-            padding: 15px;
-            background-color: #ffcce6;
-            border: 2px dashed #ff66cc;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 80%; /* Ajuste a largura conforme necessário */
-            max-width: 300px;
-        }
-        .upload-container:hover {
-            background-color: #ffb3d9;
-        }
-        .upload-icon {
-            font-size: 24px;
-            margin-bottom: 5px;
-            color: #ff66cc;
-        }
-        #fileInput {
-            display: none; /* Oculta o input padrão */
-        }
         #galeria-container {
             overflow: hidden;
             width: 300px; /* Largura inicial do container */
@@ -70,17 +47,41 @@
             padding: 0 10px;
         }
         .controle button {
-            padding: 8px 15px;
-            font-size: 16px;
+            padding: 8px 12px;
+            font-size: 20px; /* Tamanho das setas */
             cursor: pointer;
             border: none;
             background-color: rgba(255, 102, 204, 0.7); /* Fundo semi-transparente */
             color: white;
             border-radius: 5px;
             transition: background-color 0.3s ease;
+            line-height: 1; /* Ajusta o alinhamento vertical */
         }
         .controle button:hover {
             background-color: rgba(255, 102, 204, 0.9);
+        }
+        /* Estilo para o input de arquivo (agora abaixo) */
+        .upload-container {
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #ffcce6;
+            border: 2px dashed #ff66cc;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 80%; /* Ajuste a largura conforme necessário */
+            max-width: 300px;
+        }
+        .upload-container:hover {
+            background-color: #ffb3d9;
+        }
+        .upload-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: #ff66cc;
+        }
+        #fileInput {
+            display: none; /* Oculta o input padrão */
         }
     </style>
 </head>
@@ -89,20 +90,20 @@
         <h1>Maria & Breno</h1>
         <p id="contador"></p>
         <p id="frase"></p>
+        <div id="galeria-container">
+            <div id="galeria">
+                </div>
+            <div class="controle">
+                <button onclick="mudarSlide(-1)">⬅️</button>
+                <button onclick="mudarSlide(1)">➡️</button>
+            </div>
+        </div>
         <div class="upload-container" onclick="document.getElementById('fileInput').click();">
             <div style="text-align: center;">
                 <span class="upload-icon">⬆️</span><br>
                 Clique aqui para escolher uma foto
             </div>
             <input type="file" id="fileInput" onchange="handleFileUpload(event)" accept="image/*"/>
-        </div>
-        <div id="galeria-container">
-            <div id="galeria">
-                </div>
-            <div class="controle">
-                <button onclick="mudarSlide(-1)">Anterior</button>
-                <button onclick="mudarSlide(1)">Próxima</button>
-            </div>
         </div>
     </div>
 
