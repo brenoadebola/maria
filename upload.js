@@ -1,37 +1,31 @@
-import { getStorage, ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
-import { app } from './firebase.js';
+import { storage } from "./firebase.js";
+import { ref, uploadBytes, getDownloadURL, listAll } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 
-const storage = getStorage(app);
-const uploadInput = document.getElementById("upload");
-const gallery = document.getElementById("gallery");
-
-function showImage(url) {
-  const img = document.createElement("img");
-  img.src = url;
-  img.style.maxWidth = "200px";
-  img.style.margin = "10px";
-  gallery.appendChild(img);
-}
-
-uploadInput.addEventListener("change", async (event) => {
+document.getElementById("fileInput").addEventListener("change", async (event) => {
   const file = event.target.files[0];
   if (!file) return;
 
-  const storageRef = ref(storage, `fotos/${Date.now()}-${file.name}`);
+  const storageRef = ref(storage, 'fotos/' + file.name);
   await uploadBytes(storageRef, file);
   const url = await getDownloadURL(storageRef);
-  showImage(url);
+  adicionarImagem(url);
 });
 
-// Carregar todas as imagens já salvas no Firebase
-async function loadGallery() {
-  const listRef = ref(storage, 'fotos/');
-  const res = await listAll(listRef);
+export async function carregarFotos() {
+  const galeria = document.getElementById("galeria");
+  galeria.innerHTML = ""; // limpa antes
+  const folderRef = ref(storage, 'fotos');
+  const res = await listAll(folderRef);
 
-  for (const item of res.items) {
-    const url = await getDownloadURL(item);
-    showImage(url);
-  }
+  res.items.forEach(async (itemRef) => {
+    const url = await getDownloadURL(itemRef);
+    adicionarImagem(url);
+  });
 }
 
-loadGallery();
+function adicionarImagem(url) {
+  const galeria = document.getElementById("galeria");
+  const img = document.createElement("img");
+  img.src = url;
+  galeria.appendChild(img);
+}

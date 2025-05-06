@@ -1,79 +1,75 @@
-
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maria & Breno</title>
     <style>
         body {
-            font-family: 'Comic Sans MS', cursive;
+            font-family: Comic Sans MS, cursive, sans-serif;
             background-color: #e6f2ff;
             text-align: center;
-            padding: 30px;
+            margin-top: 50px;
         }
         .container {
             background-color: #ffe6f2;
             border: 3px double #ff66cc;
+            display: inline-block;
             padding: 30px;
             border-radius: 10px;
-            max-width: 600px;
-            margin: auto;
         }
-        #gallery {
-            margin-top: 20px;
-        }
-        #gallery img {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            margin: 5px;
-            border-radius: 5px;
+        img {
+            max-width: 200px;
+            margin: 10px;
+            border-radius: 10px;
         }
     </style>
 </head>
-<body>
+<body onload="carregarFotos()">
     <div class="container">
-        <h1><strong>Maria & Breno</strong></h1>
-        <p id="timer">Estamos juntos há...</p>
-        <p id="message">Desde 30 de abril de 2025 que ...</p>
-        <input type="file" id="fileInput" accept="image/*" />
-        <div id="gallery" style="margin-top: 20px; display: flex; flex-wrap: wrap;"></div>
-
+        <h1>Maria & Breno</h1>
+        <p id="contador"></p>
+        <p id="frase"></p>
+        <input type="file" id="fileInput" />
+        <div id="galeria"></div>
     </div>
 
-    <script type="module" src="./firebase.js"></script>
-    <script type="module" src="./upload.js"></script>
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="upload.js"></script>
     <script>
-        // Contador de tempo
-        const startDate = new Date("2025-04-30T00:00:00");
-        function updateTimer() {
-            const now = new Date();
-            const diff = now - startDate;
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const minutes = Math.floor((diff / (1000 * 60)) % 60);
-            const seconds = Math.floor((diff / 1000) % 60);
-            document.getElementById("timer").innerText = `Estamos juntos há ${days} dias, ${hours}h ${minutes}m ${seconds}s!`;
-        }
-        setInterval(updateTimer, 1000);
-        updateTimer();
-
-        // Frases aleatórias
         const frases = [
             "estou sendo perturbado pela Maria",
-            "ela me fez assistir série que eu não queria",
-            "ela roubou minha coberta de novo",
-            "me tornei o fotógrafo particular dela",
-            "descobri que amar também é perder discussões",
-            "ainda não aprendi a dizer não pra ela",
+            "a gente briga por causa do tamanho da coxinha",
             "até pizza virou desculpa pra me ver",
-            "eu rio até quando ela tá brava",
-            "ela manda no controle remoto e no meu coração",
-            "a gente briga por causa do tamanho da coxinha"
+            "não teve um dia sem rir dela",
+            "ela é meu caos preferido",
+            "até o céu parece mais bonito com ela",
+            "daria replay em todos nossos momentos",
+            "ela me faz esquecer que o mundo é cruel",
+            "a Maria virou minha rotina favorita",
+            "a vida ficou mais rosa desde então"
         ];
-        document.getElementById("message").innerText = `Desde 30 de abril de 2025 que ${frases[Math.floor(Math.random() * frases.length)]}`;
-    </script>
+        const dataInicial = new Date("2025-04-30T00:00:00");
 
+        function atualizarContador() {
+            const agora = new Date();
+            const diff = agora - dataInicial;
+            const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const horas = agora.getHours();
+            const minutos = agora.getMinutes();
+            const segundos = agora.getSeconds();
+            document.getElementById("contador").innerText =
+                `Estamos juntos há ${dias} dias, ${horas}h ${minutos}m ${segundos}s!`;
+        }
+
+        function fraseAleatoria() {
+            const frase = frases[Math.floor(Math.random() * frases.length)];
+            document.getElementById("frase").innerText =
+                `Desde 30 de abril de 2025 que ${frase}`;
+        }
+
+        setInterval(atualizarContador, 1000);
+        atualizarContador();
+        fraseAleatoria();
+    </script>
 </body>
 </html>
