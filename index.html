@@ -194,6 +194,74 @@
     </div>
 
     <script type="module">
+const inicioContent = document.getElementById('inicio-content');
+        const albumContent = document.getElementById('album-content');
+        const albumContainer = document.getElementById('album-container');
+        const photoOptionsModal = document.getElementById('photo-options-modal');
+        const modalImage = document.getElementById('modal-image');
+
+        function showInicio() {
+            inicioContent.style.display = 'flex';
+            albumContent.style.display = 'none';
+            document.querySelector('.header a:first-child').classList.add('active');
+            document.querySelector('.header a:last-child').classList.remove('active');
+        }
+
+        function showAlbum() {
+            inicioContent.style.display = 'none';
+            albumContent.style.display = 'flex';
+            document.querySelector('.header a:first-child').classList.remove('active');
+            document.querySelector('.header a:last-child').classList.add('active');
+            renderAlbum(); // Chama a função para renderizar o álbum ao exibir
+        }
+
+        function renderAlbum() {
+            albumContainer.innerHTML = '';
+            todasFotosCarregadas.forEach(url => {
+                const img = document.createElement('img');
+                img.src = url;
+                img.onclick = () => showPhotoOptions(url);
+                albumContainer.appendChild(img);
+            });
+        }
+
+        function showPhotoOptions(url) {
+            currentPhotoUrl = url;
+            modalImage.src = url;
+            photoOptionsModal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            photoOptionsModal.style.display = 'none';
+        }
+
+        function showFullscreen() {
+            window.open(currentPhotoUrl, '_blank');
+        }
+
+        async function removerFoto() {
+            if (currentPhotoUrl) {
+                const imageName = currentPhotoUrl.split('/').pop().split('?')[0];
+                const imageRef = ref(storage, `casal/${imageName}`);
+
+                try {
+                    await deleteObject(imageRef);
+                    console.log(`Foto ${imageName} removida com sucesso.`);
+                    todasFotosCarregadas = todasFotosCarregadas.filter(url => url !== currentPhotoUrl);
+                    fotosCarregadas = fotosCarregadas.filter(url => url !== currentPhotoUrl);
+                    renderAlbum(); // Atualiza o álbum
+                    atualizarCarrossel(); // Atualiza o carrossel se a foto atual for removida
+                    closeModal();
+                } catch (error) {
+                    console.error("Erro ao remover foto:", error);
+                    alert("Ocorreu um erro ao remover a foto.");
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            showInicio(); // Mostra a tela inicial por padrão
+        });
         // Importe as funções que você precisa dos SDKs que você usa
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getStorage, ref, uploadBytesResumable, getDownloadURL, listAll } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
