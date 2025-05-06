@@ -140,16 +140,15 @@
             galeria.style.transform = `translateX(-${slideIndex * larguraFoto}px)`;
         }
 
-        function mudarSlide(n) {
-            slideIndex += n;
-            if (slideIndex < 0) {
-                slideIndex = fotosCarregadas.length - 1;
-            } else if (slideIndex >= fotosCarregadas.length) {
-                slideIndex = 0;
-            }
-            atualizarCarrossel();
-        }
-
+      window.mudarSlide = function mudarSlide(n) {
+    slideIndex += n;
+    if (slideIndex < 0) {
+        slideIndex = fotosCarregadas.length - 1;
+    } else if (slideIndex >= fotosCarregadas.length) {
+        slideIndex = 0;
+    }
+    atualizarCarrossel();
+}
         window.carregarFotos = async function carregarFotos() {
             const storageRef = ref(window.storage, 'casal');
             try {
