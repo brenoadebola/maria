@@ -349,22 +349,28 @@
             });
         }
 
-        async function removerFoto(urlToRemove) {
-            const imageName = urlToRemove.split('/').pop().split('?')[0];
-            const imageRef = ref(storage, `casal/${imageName}`);
+     async function removerFoto(urlToRemove) {
+    let imageName = urlToRemove.split('/').pop().split('?')[0];
 
-            try {
-                await deleteObject(imageRef);
-                console.log(`Foto ${imageName} removida com sucesso.`);
-                todasFotosCarregadas = todasFotosCarregadas.filter(url => url !== urlToRemove);
-                fotosCarregadas = fotosCarregadas.filter(url => url !== urlToRemove);
-                renderAlbum();
-                atualizarCarrossel();
-            } catch (error) {
-                console.error("Erro ao remover foto:", error);
-                alert("Ocorreu um erro ao remover a foto.");
-            }
-        }
+    // Remove uma possível duplicata de "casal%2F" no início do nome do arquivo
+    if (imageName.startsWith('casal%2F')) {
+        imageName = imageName.substring('casal%2F'.length);
+    }
+
+    const imageRef = ref(storage, `casal/${imageName}`);
+
+    try {
+        await deleteObject(imageRef);
+        console.log(`Foto ${imageName} removida com sucesso.`);
+        todasFotosCarregadas = todasFotosCarregadas.filter(url => url !== urlToRemove);
+        fotosCarregadas = fotosCarregadas.filter(url => url !== urlToRemove);
+        renderAlbum();
+        atualizarCarrossel();
+    } catch (error) {
+        console.error("Erro ao remover foto:", error);
+        alert("Ocorreu um erro ao remover a foto.");
+    }
+}
 
         document.addEventListener('DOMContentLoaded', () => {
             const fileInput = document.getElementById('fileInput');
