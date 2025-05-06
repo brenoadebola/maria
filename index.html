@@ -11,38 +11,8 @@
             text-align: center;
             margin: 0;
             padding-top: 20px;
+            margin-bottom: 60px; /* Espaço para o container de todas as fotos */
         }
-        /* Cabeçalho */
-        .header {
-            background-color: #ffcce6;
-            padding: 15px 0;
-            border-bottom: 2px solid #ff66cc;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            width: 100%;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header a {
-            text-decoration: none;
-            color: #ff66cc;
-            font-weight: bold;
-            font-size: 1.2em;
-            padding: 10px 15px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-        .header a.active {
-            background-color: #ff66cc;
-            color: white;
-        }
-        .header a:hover {
-            background-color: #ffb3d9;
-            color: white;
-        }
-        /* Container principal */
         .container {
             background-color: #ffe6f2;
             border: 3px double #ff66cc;
@@ -63,7 +33,6 @@
             margin-top: 5px;
             margin-bottom: 5px;
         }
-        /* Galeria Container (para o carrossel na tela inicial) */
         #galeria-container {
             overflow: hidden;
             width: 90%;
@@ -108,7 +77,6 @@
         .controle button:hover {
             background-color: rgba(255, 102, 204, 0.9);
         }
-        /* Upload Container */
         .upload-container {
             margin: 20px auto;
             padding: 15px;
@@ -131,7 +99,97 @@
         #fileInput {
             display: none;
         }
-        /* Estilos específicos para telas menores (até 600px de largura) */
+        /* Container para todas as fotos */
+        .all-photos-container {
+            background-color: #ffe6f2;
+            border: 3px double #ff66cc;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 95%;
+            margin: 20px auto;
+        }
+        #all-photos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            width: 90%;
+            max-width: 800px;
+            margin-top: 10px;
+        }
+        .photo-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .photo-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+            object-fit: cover;
+            margin-bottom: 5px;
+        }
+        .photo-item img:hover {
+            transform: scale(1.05);
+        }
+        .remove-button {
+            padding: 8px 12px;
+            font-size: 0.9em;
+            cursor: pointer;
+            border: none;
+            background-color: #ff66cc;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .remove-button:hover {
+            background-color: #ffb3d9;
+        }
+        /* Modal para opções da foto */
+        .photo-options-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .photo-options-content {
+            background-color: #ffe6f2;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #ff66cc;
+        }
+        .photo-options-content img {
+            max-width: 90%;
+            max-height: 80vh;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .photo-options-content button {
+            padding: 10px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            background-color: #ff66cc;
+            color: white;
+            border-radius: 5px;
+            margin: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .photo-options-content button:hover {
+            background-color: #ffb3d9;
+        }
+        /* Estilos para telas menores */
         @media (max-width: 600px) {
             h1 {
                 font-size: 1.5em;
@@ -146,16 +204,18 @@
                 padding: 5px 8px;
                 font-size: 16px;
             }
+            #all-photos-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+            .remove-button {
+                font-size: 0.8em;
+                padding: 5px 8px;
+            }
         }
     </style>
 </head>
-<body onload="carregarFotos()">
-   <div class="header">
-        <a href="#" onclick="showInicio()" class="active">Início</a>
-        <a href="#" onclick="showAlbum()">Álbum de Fotos</a>
-    </div>
-
-    <div class="container" id="inicio-content">
+<body>
+    <div class="container">
         <h1>Maria & Breno</h1>
         <p id="contador"></p>
         <p id="contadorBeijo"></p>
@@ -178,9 +238,9 @@
         </div>
     </div>
 
-    <div class="container" id="album-content" style="display: none;">
-        <h1>Álbum de Fotos</h1>
-        <div id="album-container">
+    <div class="all-photos-container">
+        <h1>Todas as Fotos</h1>
+        <div id="all-photos-grid">
             </div>
     </div>
 
@@ -188,83 +248,14 @@
         <div class="photo-options-content">
             <img id="modal-image" src="#" alt="Foto em tela cheia">
             <button onclick="showFullscreen()">Tela Cheia</button>
-            <button onclick="removerFoto()">Remover</button>
             <button onclick="closeModal()">Fechar</button>
         </div>
     </div>
 
     <script type="module">
-const inicioContent = document.getElementById('inicio-content');
-        const albumContent = document.getElementById('album-content');
-        const albumContainer = document.getElementById('album-container');
-        const photoOptionsModal = document.getElementById('photo-options-modal');
-        const modalImage = document.getElementById('modal-image');
-
-        function showInicio() {
-            inicioContent.style.display = 'flex';
-            albumContent.style.display = 'none';
-            document.querySelector('.header a:first-child').classList.add('active');
-            document.querySelector('.header a:last-child').classList.remove('active');
-        }
-
-        function showAlbum() {
-            inicioContent.style.display = 'none';
-            albumContent.style.display = 'flex';
-            document.querySelector('.header a:first-child').classList.remove('active');
-            document.querySelector('.header a:last-child').classList.add('active');
-            renderAlbum(); // Chama a função para renderizar o álbum ao exibir
-        }
-
-        function renderAlbum() {
-            albumContainer.innerHTML = '';
-            todasFotosCarregadas.forEach(url => {
-                const img = document.createElement('img');
-                img.src = url;
-                img.onclick = () => showPhotoOptions(url);
-                albumContainer.appendChild(img);
-            });
-        }
-
-        function showPhotoOptions(url) {
-            currentPhotoUrl = url;
-            modalImage.src = url;
-            photoOptionsModal.style.display = 'flex';
-        }
-
-        function closeModal() {
-            photoOptionsModal.style.display = 'none';
-        }
-
-        function showFullscreen() {
-            window.open(currentPhotoUrl, '_blank');
-        }
-
-        async function removerFoto() {
-            if (currentPhotoUrl) {
-                const imageName = currentPhotoUrl.split('/').pop().split('?')[0];
-                const imageRef = ref(storage, `casal/${imageName}`);
-
-                try {
-                    await deleteObject(imageRef);
-                    console.log(`Foto ${imageName} removida com sucesso.`);
-                    todasFotosCarregadas = todasFotosCarregadas.filter(url => url !== currentPhotoUrl);
-                    fotosCarregadas = fotosCarregadas.filter(url => url !== currentPhotoUrl);
-                    renderAlbum(); // Atualiza o álbum
-                    atualizarCarrossel(); // Atualiza o carrossel se a foto atual for removida
-                    closeModal();
-                } catch (error) {
-                    console.error("Erro ao remover foto:", error);
-                    alert("Ocorreu um erro ao remover a foto.");
-                }
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            showInicio(); // Mostra a tela inicial por padrão
-        });
         // Importe as funções que você precisa dos SDKs que você usa
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL, listAll } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, listAll, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         // Sua configuração do Firebase
         const firebaseConfig = {
@@ -288,6 +279,7 @@ const inicioContent = document.getElementById('inicio-content');
         window.uploadBytesResumable = uploadBytesResumable;
         window.getDownloadURL = getDownloadURL;
         window.listAll = listAll;
+        window.deleteObject = deleteObject;
 
         const frases = [
             "estou sendo perturbado pela Maria",
@@ -305,6 +297,12 @@ const inicioContent = document.getElementById('inicio-content');
         const dataBeijo = new Date("2024-07-05T00:00:00");
         let slideIndex = 0;
         let fotosCarregadas = [];
+        let todasFotosCarregadas = [];
+        let currentPhotoUrl;
+        const allPhotosGrid = document.getElementById('all-photos-grid');
+        const photoOptionsModal = document.getElementById('photo-options-modal');
+        const modalImage = document.getElementById('modal-image');
+        let currentPhotoUrlToRemove;
 
         function atualizarContador() {
             const agora = new Date();
@@ -337,6 +335,7 @@ const inicioContent = document.getElementById('inicio-content');
             img.src = url;
             galeriaDiv.appendChild(img);
             fotosCarregadas.push(url);
+            todasFotosCarregadas.push(url);
             atualizarCarrossel();
         }
 
@@ -359,10 +358,12 @@ const inicioContent = document.getElementById('inicio-content');
             const storageRef = ref(window.storage, 'casal');
             try {
                 const res = await listAll(storageRef);
-                res.items.forEach(async (itemRef) => {
-                    const url = await getDownloadURL(itemRef);
+                const urls = await Promise.all(res.items.map(itemRef => getDownloadURL(itemRef)));
+                urls.forEach(url => {
                     adicionarFotoGaleria(url);
+                    todasFotosCarregadas.push(url);
                 });
+                renderAlbum();
             } catch (error) {
                 console.error("Erro ao carregar fotos:", error);
             }
@@ -394,17 +395,85 @@ const inicioContent = document.getElementById('inicio-content');
                         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
                         console.log('File available at', downloadURL);
                         adicionarFotoGaleria(downloadURL);
+                        todasFotosCarregadas.push(downloadURL);
+                        renderAlbum();
                     }
                 );
             }
         }
 
+        function renderAlbum() {
+            allPhotosGrid.innerHTML = '';
+            todasFotosCarregadas.forEach(url => {
+                const photoItem = document.createElement('div');
+                photoItem.classList.add('photo-item');
+
+                const img = document.createElement('img');
+                img.src = url;
+                img.onclick = () => showPhotoOptions(url);
+
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Remover';
+                removeButton.classList.add('remove-button');
+                removeButton.onclick = () => confirmRemove(url);
+
+                photoItem.appendChild(img);
+                photoItem.appendChild(removeButton);
+                allPhotosGrid.appendChild(photoItem);
+            });
+        }
+
+        function confirmRemove(url) {
+            currentPhotoUrlToRemove = url;
+            const imageName = url.split('/').pop().split('?')[0];
+            if (confirm(`Tem certeza que deseja remover a foto "${imageName}"?`)) {
+                removerFoto(url);
+            }
+        }
+
+        function showPhotoOptions(url) {
+            currentPhotoUrl = url;
+            modalImage.src = url;
+            photoOptionsModal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            photoOptionsModal.style.display = 'none';
+        }
+
+        function showFullscreen() {
+            window.open(currentPhotoUrl, '_blank');
+        }
+
+        async function removerFoto(urlToRemove) {
+            if (urlToRemove) {
+                const imageName = urlToRemove.split('/').pop().split('?')[0];
+                const imageRef = ref(storage, `casal/${imageName}`);
+
+                try {
+                    await deleteObject(imageRef);
+                    console.log(`Foto ${imageName} removida com sucesso.`);
+                    todasFotosCarregadas = todasFotosCarregadas.filter(url => url !== urlToRemove);
+                    fotosCarregadas = fotosCarregadas.filter(url => url !== urlToRemove);
+                    renderAlbum(); // Atualiza a exibição de todas as fotos
+                    atualizarCarrossel(); // Atualiza o carrossel da tela inicial
+                    if (currentPhotoUrl === urlToRemove) {
+                        closeModal(); // Fecha o modal se a foto removida estiver aberta
+                    }
+                    currentPhotoUrlToRemove = null;
+                } catch (error) {
+                    console.error("Erro ao remover foto:", error);
+                    alert("Ocorreu um erro ao remover a foto.");
+                }
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            const fileInput = document.getElementById('fileInput');
+            carregarFotos();
         });
 
         setInterval(atualizarContador, 1000);
-        setInterval(atualizarContadorBeijo, 1000 * 60); // Atualiza a cada minuto
+        setInterval(atualizarContadorBeijo, 60000);
         atualizarContador();
         atualizarContadorBeijo();
         fraseAleatoria();
