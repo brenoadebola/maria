@@ -1,146 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<script type="module">
-  // Importe as funções que você precisa dos SDKs que você usa
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getStorage, ref, uploadBytesResumable, getDownloadURL, listAll } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-
-  // Sua configuração do Firebase (cole aqui as suas credenciais)
-  const firebaseConfig = {
-    apiKey: "AIzaSyAv3g3-Gjp2OYLNG3PgVczwBFSQXAxcDj0",
-    authDomain: "maria-18e7a.firebaseapp.com",
-    projectId: "maria-18e7a",
-    storageBucket: "maria-18e7a.firebasestorage.app",
-    messagingSenderId: "187919316652",
-    appId: "1:187919316652:web:153b6f5758859e14f25109"
-  };
-
-  // Inicialize o Firebase
-  const app = initializeApp(firebaseConfig);
-
-  // Inicialize o Firebase Storage
-  const storage = getStorage(app);
-
-  // Exporte as funções que serão usadas no escopo global (se necessário)
-  window.storage = storage;
-  window.ref = ref;
-  window.uploadBytesResumable = uploadBytesResumable;
-  window.getDownloadURL = getDownloadURL;
-  window.listAll = listAll;
-
-  // Resto do seu código JavaScript (frases, dataInicial, funções, etc.)
-  const frases = [
-    "estou sendo perturbado pela Maria",
-    "a gente briga por causa do tamanho da coxinha",
-    "até pizza virou desculpa pra me ver",
-    "não teve um dia sem rir dela",
-    "ela é meu caos preferido",
-    "até o céu parece mais bonito com ela",
-    "daria replay em todos nossos momentos",
-    "ela me faz esquecer que o mundo é cruel",
-    "a Maria virou minha rotina favorita",
-    "a vida ficou mais rosa desde então"
-  ];
-  const dataInicial = new Date("2025-04-30T00:00:00");
-  let slideIndex = 0;
-  let fotosCarregadas = [];
-
-  function atualizarContador() {
-    const agora = new Date();
-    const diff = agora - dataInicial;
-    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const horas = agora.getHours();
-    const minutos = agora.getMinutes();
-    const segundos = agora.getSeconds();
-    document.getElementById("contador").innerText =
-      `Estamos juntos há ${dias} dias, ${horas}h ${minutos}m ${segundos}s!`;
-  }
-
-  function fraseAleatoria() {
-    const frase = frases[Math.floor(Math.random() * frases.length)];
-    document.getElementById("frase").innerText =
-      `Desde 30 de abril de 2025 que ${frase}`;
-  }
-
-  function adicionarFotoGaleria(url) {
-    const galeriaDiv = document.getElementById('galeria');
-    const img = document.createElement('img');
-    img.src = url;
-    galeriaDiv.appendChild(img);
-    fotosCarregadas.push(url);
-    atualizarCarrossel();
-  }
-
-  function atualizarCarrossel() {
-    const galeria = document.getElementById('galeria');
-    const larguraFoto = document.querySelector('#galeria img')?.offsetWidth || 300;
-    galeria.style.transform = `translateX(-${slideIndex * larguraFoto}px)`;
-  }
-
-  function mudarSlide(n) {
-    slideIndex += n;
-    if (slideIndex < 0) {
-      slideIndex = fotosCarregadas.length - 1;
-    } else if (slideIndex >= fotosCarregadas.length) {
-      slideIndex = 0;
-    }
-    atualizarCarrossel();
-  }
-
-  async function carregarFotos() {
-    const storageRef = ref(window.storage, 'casal'); // Use window.ref
-    try {
-      const res = await listAll(storageRef);
-      res.items.forEach(async (itemRef) => {
-        const url = await getDownloadURL(itemRef);
-        adicionarFotoGaleria(url);
-      });
-    } catch (error) {
-      console.error("Erro ao carregar fotos:", error);
-    }
-  }
-
-  async function handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (file) {
-      const storageRef = ref(window.storage, `casal/${file.name}`); // Use window.ref
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
-      uploadTask.on('state_changed',
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log('Upload is ' + progress + '% done');
-          switch (snapshot.state) {
-            case 'paused':
-              console.log('Upload is paused');
-              break;
-            case 'running':
-              console.log('Upload is running');
-              break;
-          }
-        },
-        (error) => {
-          console.error("Erro no upload:", error);
-        },
-        async () => {
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref); // Use window.getDownloadURL
-          console.log('File available at', downloadURL);
-          adicionarFotoGaleria(downloadURL);
-        }
-      );
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const fileInput = document.getElementById('fileInput');
-    fileInput.addEventListener('change', handleFileUpload);
-  });
-
-  setInterval(atualizarContador, 1000);
-  atualizarContador();
-  fraseAleatoria();
-</script>
     <meta charset="UTF-8">
     <title>Maria & Breno</title>
     <style>
@@ -204,10 +64,33 @@
         </div>
     </div>
 
-    <script type="module" src="firebase.js"></script>
-    <script type="module" src="upload.js"></script>
     <script type="module">
-        import { storage, ref, listAll, getDownloadURL } from './firebase.js';
+        // Importe as funções que você precisa dos SDKs que você usa
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, listAll } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+        // Sua configuração do Firebase
+        const firebaseConfig = {
+          apiKey: "AIzaSyAv3g3-Gjp2OYLNG3PgVczwBFSQXAxcDj0",
+          authDomain: "maria-18e7a.firebaseapp.com",
+          projectId: "maria-18e7a",
+          storageBucket: "maria-18e7a.firebasestorage.app",
+          messagingSenderId: "187919316652",
+          appId: "1:187919316652:web:153b6f5758859e14f25109"
+        };
+
+        // Inicialize o Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Inicialize o Firebase Storage
+        const storage = getStorage(app);
+
+        // Exporte as funções para o escopo global (window)
+        window.storage = storage;
+        window.ref = ref;
+        window.uploadBytesResumable = uploadBytesResumable;
+        window.getDownloadURL = getDownloadURL;
+        window.listAll = listAll;
 
         const frases = [
             "estou sendo perturbado pela Maria",
@@ -253,7 +136,7 @@
 
         function atualizarCarrossel() {
             const galeria = document.getElementById('galeria');
-            const larguraFoto = document.querySelector('#galeria img')?.offsetWidth || 300; // Largura da foto ou padrão
+            const larguraFoto = document.querySelector('#galeria img')?.offsetWidth || 300;
             galeria.style.transform = `translateX(-${slideIndex * larguraFoto}px)`;
         }
 
@@ -267,9 +150,8 @@
             atualizarCarrossel();
         }
 
-        async function carregarFotos() {
-            const storageRef = ref(storage, 'casal');
-
+        window.carregarFotos = async function carregarFotos() {
+            const storageRef = ref(window.storage, 'casal');
             try {
                 const res = await listAll(storageRef);
                 res.items.forEach(async (itemRef) => {
@@ -281,12 +163,45 @@
             }
         }
 
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const storageRef = ref(window.storage, `casal/${file.name}`);
+                const uploadTask = uploadBytesResumable(storageRef, file);
+
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        console.log('Upload is ' + progress + '% done');
+                        switch (snapshot.state) {
+                            case 'paused':
+                                console.log('Upload is paused');
+                                break;
+                            case 'running':
+                                console.log('Upload is running');
+                                break;
+                        }
+                    },
+                    (error) => {
+                        console.error("Erro no upload:", error);
+                    },
+                    async () => {
+                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                        console.log('File available at', downloadURL);
+                        adicionarFotoGaleria(downloadURL);
+                    }
+                );
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const fileInput = document.getElementById('fileInput');
+            fileInput.addEventListener('change', handleFileUpload);
+        });
+
         setInterval(atualizarContador, 1000);
         atualizarContador();
         fraseAleatoria();
-
-        // Carregar fotos existentes ao carregar a página
-        // A função carregarFotos() já está sendo chamada no onload do body
     </script>
 </body>
 </html>
