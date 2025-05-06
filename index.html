@@ -9,22 +9,53 @@
             font-family: Comic Sans MS, sans-serif;
             background-color: #e6f2ff;
             text-align: center;
-            margin-top: 20px; /* Reduzi a margem superior em telas menores */
-            margin-bottom: 20px; /* Adicionei margem inferior */
+            margin: 0;
+            padding-top: 20px;
         }
+        /* Cabeçalho */
+        .header {
+            background-color: #ffcce6;
+            padding: 15px 0;
+            border-bottom: 2px solid #ff66cc;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header a {
+            text-decoration: none;
+            color: #ff66cc;
+            font-weight: bold;
+            font-size: 1.2em;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .header a.active {
+            background-color: #ff66cc;
+            color: white;
+        }
+        .header a:hover {
+            background-color: #ffb3d9;
+            color: white;
+        }
+        /* Container principal */
         .container {
             background-color: #ffe6f2;
             border: 3px double #ff66cc;
-            padding: 20px; /* Reduzi o padding em telas menores */
+            padding: 20px;
             border-radius: 10px;
             display: flex;
-            flex-direction: column; /* Empilha os elementos verticalmente em telas menores */
-            align-items: center; /* Centraliza os itens horizontalmente */
-            max-width: 95%; /* Largura máxima para evitar quebrar em telas pequenas */
-            margin: 10px auto; /* Centraliza o container e adiciona margem */
+            flex-direction: column;
+            align-items: center;
+            max-width: 95%;
+            margin: 20px auto;
         }
         h1 {
-            font-size: 2em; /* Reduzi o tamanho da fonte em telas menores */
+            font-size: 2em;
             margin-top: 10px;
             margin-bottom: 10px;
         }
@@ -32,10 +63,11 @@
             margin-top: 5px;
             margin-bottom: 5px;
         }
+        /* Galeria Container (para o carrossel na tela inicial) */
         #galeria-container {
             overflow: hidden;
-            width: 90%; /* Largura da galeria em telas menores */
-            max-width: 400px; /* Largura máxima da galeria */
+            width: 90%;
+            max-width: 400px;
             margin: 20px auto;
             border-radius: 10px;
             position: relative;
@@ -76,6 +108,7 @@
         .controle button:hover {
             background-color: rgba(255, 102, 204, 0.9);
         }
+        /* Upload Container */
         .upload-container {
             margin: 20px auto;
             padding: 15px;
@@ -120,6 +153,7 @@
     <div class="container">
         <h1>Maria & Breno</h1>
         <p id="contador"></p>
+        <p id="contadorBeijo"></p>
         <p id="frase"></p>
         <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/25ZLH7Wt5zJcjnUXkKJueB?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         <div id="galeria-container">
@@ -180,6 +214,7 @@
             "a vida ficou mais rosa desde então"
         ];
         const dataInicial = new Date("2025-04-30T00:00:00");
+        const dataBeijo = new Date("2024-07-05T00:00:00");
         let slideIndex = 0;
         let fotosCarregadas = [];
 
@@ -192,6 +227,14 @@
             const segundos = agora.getSeconds();
             document.getElementById("contador").innerText =
                 `Estamos juntos há ${dias} dias, ${horas}h ${minutos}m ${segundos}s!`;
+        }
+
+        function atualizarContadorBeijo() {
+            const agora = new Date();
+            const diffBeijo = agora - dataBeijo;
+            const diasBeijo = Math.floor(diffBeijo / (1000 * 60 * 60 * 24));
+            document.getElementById("contadorBeijo").innerText =
+                `Nosso primeiro beijo foi há ${diasBeijo} dias!`;
         }
 
         function fraseAleatoria() {
@@ -273,7 +316,9 @@
         });
 
         setInterval(atualizarContador, 1000);
+        setInterval(atualizarContadorBeijo, 1000 * 60); // Atualiza a cada minuto
         atualizarContador();
+        atualizarContadorBeijo();
         fraseAleatoria();
     </script>
 </body>
