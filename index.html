@@ -9,22 +9,53 @@
             font-family: Comic Sans MS, cursive, sans-serif;
             background-color: #e6f2ff;
             text-align: center;
-            margin-top: 20px; /* Reduzi a margem superior em telas menores */
-            margin-bottom: 20px; /* Adicionei margem inferior */
+            margin: 0; /* Reset margin */
+            padding-top: 20px;
         }
+        /* Cabeçalho */
+        .header {
+            background-color: #ffcce6;
+            padding: 15px 0;
+            border-bottom: 2px solid #ff66cc;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header a {
+            text-decoration: none;
+            color: #ff66cc;
+            font-weight: bold;
+            font-size: 1.2em;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .header a.active {
+            background-color: #ff66cc;
+            color: white;
+        }
+        .header a:hover {
+            background-color: #ffb3d9;
+            color: white;
+        }
+        /* Container principal */
         .container {
             background-color: #ffe6f2;
             border: 3px double #ff66cc;
-            padding: 20px; /* Reduzi o padding em telas menores */
+            padding: 20px;
             border-radius: 10px;
             display: flex;
-            flex-direction: column; /* Empilha os elementos verticalmente em telas menores */
-            align-items: center; /* Centraliza os itens horizontalmente */
-            max-width: 95%; /* Largura máxima para evitar quebrar em telas pequenas */
-            margin: 10px auto; /* Centraliza o container e adiciona margem */
+            flex-direction: column;
+            align-items: center;
+            max-width: 95%;
+            margin: 20px auto;
         }
         h1 {
-            font-size: 2em; /* Reduzi o tamanho da fonte em telas menores */
+            font-size: 2em;
             margin-top: 10px;
             margin-bottom: 10px;
         }
@@ -32,10 +63,11 @@
             margin-top: 5px;
             margin-bottom: 5px;
         }
+        /* Galeria Container (para o carrossel na tela inicial) */
         #galeria-container {
             overflow: hidden;
-            width: 90%; /* Largura da galeria em telas menores */
-            max-width: 400px; /* Largura máxima da galeria */
+            width: 90%;
+            max-width: 400px;
             margin: 20px auto;
             border-radius: 10px;
             position: relative;
@@ -76,6 +108,7 @@
         .controle button:hover {
             background-color: rgba(255, 102, 204, 0.9);
         }
+        /* Upload Container */
         .upload-container {
             margin: 20px auto;
             padding: 15px;
@@ -98,7 +131,68 @@
         #fileInput {
             display: none;
         }
-        /* Estilos específicos para telas menores (até 600px de largura) */
+        /* Álbum de Fotos */
+        #album-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 20px auto;
+            width: 90%;
+            max-width: 800px;
+            display: none; /* Inicialmente oculto */
+        }
+        #album-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+            object-fit: cover;
+        }
+        #album-container img:hover {
+            transform: scale(1.05);
+        }
+        /* Modal para opções da foto */
+        .photo-options-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .photo-options-content {
+            background-color: #ffe6f2;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #ff66cc;
+        }
+        .photo-options-content img {
+            max-width: 90%;
+            max-height: 80vh;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .photo-options-content button {
+            padding: 10px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            background-color: #ff66cc;
+            color: white;
+            border-radius: 5px;
+            margin: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .photo-options-content button:hover {
+            background-color: #ffb3d9;
+        }
+        /* Estilos para telas menores */
         @media (max-width: 600px) {
             h1 {
                 font-size: 1.5em;
@@ -113,15 +207,26 @@
                 padding: 5px 8px;
                 font-size: 16px;
             }
+            .header a {
+                font-size: 1em;
+                padding: 8px 10px;
+            }
+            #album-container {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
         }
     </style>
 </head>
-<body onload="carregarFotos()">
-    <div class="container">
+<body>
+    <div class="header">
+        <a href="#" onclick="showInicio()" class="active">Início</a>
+        <a href="#" onclick="showAlbum()">Álbum de Fotos</a>
+    </div>
+    <div class="container" id="inicio-content">
         <h1>Maria & Breno</h1>
         <p id="contador"></p>
         <p id="frase"></p>
-        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/25ZLH7Wt5zJcjnUXkKJueB?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/25ZLH7Wt5zJcjnUXkKJueB?utm_source=generator" width="100%" height="152" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         <div id="galeria-container">
             <div id="galeria">
                 </div>
@@ -139,10 +244,25 @@
         </div>
     </div>
 
+    <div class="container" id="album-content" style="display: none;">
+        <h1>Álbum de Fotos</h1>
+        <div id="album-container">
+            </div>
+    </div>
+
+    <div class="photo-options-modal" id="photo-options-modal">
+        <div class="photo-options-content">
+            <img id="modal-image" src="#" alt="Foto em tela cheia">
+            <button onclick="showFullscreen()">Tela Cheia</button>
+            <button onclick="removerFoto()">Remover</button>
+            <button onclick="closeModal()">Fechar</button>
+        </div>
+    </div>
+
     <script type="module">
         // Importe as funções que você precisa dos SDKs que você usa
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL, listAll } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, listAll, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         // Sua configuração do Firebase
         const firebaseConfig = {
@@ -166,6 +286,7 @@
         window.uploadBytesResumable = uploadBytesResumable;
         window.getDownloadURL = getDownloadURL;
         window.listAll = listAll;
+        window.deleteObject = deleteObject;
 
         const frases = [
             "estou sendo perturbado pela Maria",
@@ -182,6 +303,29 @@
         const dataInicial = new Date("2025-04-30T00:00:00");
         let slideIndex = 0;
         let fotosCarregadas = [];
+        let todasFotosCarregadas = []; // Array para o álbum
+        let currentPhotoUrl;
+
+        const inicioContent = document.getElementById('inicio-content');
+        const albumContent = document.getElementById('album-content');
+        const albumContainer = document.getElementById('album-container');
+        const photoOptionsModal = document.getElementById('photo-options-modal');
+        const modalImage = document.getElementById('modal-image');
+
+        function showInicio() {
+            inicioContent.style.display = 'flex';
+            albumContent.style.display = 'none';
+            document.querySelector('.header a:first-child').classList.add('active');
+            document.querySelector('.header a:last-child').classList.remove('active');
+        }
+
+        function showAlbum() {
+            inicioContent.style.display = 'none';
+            albumContent.style.display = 'flex';
+            document.querySelector('.header a:first-child').classList.remove('active');
+            document.querySelector('.header a:last-child').classList.add('active');
+            renderAlbum();
+        }
 
         function atualizarContador() {
             const agora = new Date();
@@ -206,6 +350,7 @@
             img.src = url;
             galeriaDiv.appendChild(img);
             fotosCarregadas.push(url);
+            todasFotosCarregadas.push(url); // Adiciona ao array do álbum
             atualizarCarrossel();
         }
 
@@ -268,13 +413,59 @@
             }
         }
 
+        function renderAlbum() {
+            albumContainer.innerHTML = '';
+            todasFotosCarregadas.forEach
+const img = document.createElement('img');
+                img.src = url;
+                img.onclick = () => showPhotoOptions(url);
+                albumContainer.appendChild(img);
+            });
+        }
+
+        function showPhotoOptions(url) {
+            currentPhotoUrl = url;
+            modalImage.src = url;
+            photoOptionsModal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            photoOptionsModal.style.display = 'none';
+        }
+
+        function showFullscreen() {
+            window.open(currentPhotoUrl, '_blank');
+        }
+
+        async function removerFoto() {
+            if (currentPhotoUrl) {
+                const imageName = currentPhotoUrl.split('/').pop().split('?')[0];
+                const imageRef = ref(storage, `casal/${imageName}`);
+
+                try {
+                    await deleteObject(imageRef);
+                    console.log(`Foto ${imageName} removida com sucesso.`);
+                    todasFotosCarregadas = todasFotosCarregadas.filter(url => url !== currentPhotoUrl);
+                    fotosCarregadas = fotosCarregadas.filter(url => url !== currentPhotoUrl);
+                    renderAlbum(); // Atualiza o álbum
+                    atualizarCarrossel(); // Atualiza o carrossel se a foto atual for removida
+                    closeModal();
+                } catch (error) {
+                    console.error("Erro ao remover foto:", error);
+                    alert("Ocorreu um erro ao remover a foto.");
+                }
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const fileInput = document.getElementById('fileInput');
+            showInicio(); // Mostra a tela inicial por padrão
         });
 
         setInterval(atualizarContador, 1000);
         atualizarContador();
         fraseAleatoria();
+        carregarFotos(); // Carrega as fotos ao iniciar
     </script>
 </body>
 </html>
