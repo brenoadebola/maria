@@ -1,31 +1,32 @@
-import { storage } from "./firebase.js";
-import { ref, uploadBytes, getDownloadURL, listAll } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+import { getStorage, ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
+const storage = getStorage(app);
+const fileInput = document.getElementById("fileInput");
+const gallery = document.getElementById("gallery");
 
-document.getElementById("fileInput").addEventListener("change", async (event) => {
-  const file = event.target.files[0];
+fileInput.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
   if (!file) return;
-
-  const storageRef = ref(storage, 'fotos/' + file.name);
-  await uploadBytes(storageRef, file);
-  const url = await getDownloadURL(storageRef);
-  adicionarImagem(url);
+  const fileRef = ref(storage, 'imagens/' + file.name);
+  await uploadBytes(fileRef, file);
+  const url = await getDownloadURL(fileRef);
+  addImageToGallery(url);
 });
 
-export async function carregarFotos() {
-  const galeria = document.getElementById("galeria");
-  galeria.innerHTML = ""; // limpa antes
-  const folderRef = ref(storage, 'fotos');
-  const res = await listAll(folderRef);
-
-  res.items.forEach(async (itemRef) => {
-    const url = await getDownloadURL(itemRef);
-    adicionarImagem(url);
-  });
-}
-
-function adicionarImagem(url) {
-  const galeria = document.getElementById("galeria");
+function addImageToGallery(url) {
   const img = document.createElement("img");
   img.src = url;
-  galeria.appendChild(img);
+  img.style.width = "200px";
+  img.style.margin = "10px";
+  gallery.appendChild(img);
 }
+
+// Listar imagens já salvas
+async function loadGallery() {
+  const listRef = ref(storage, 'imagens/');
+  const res = await listAll(listRef);
+  for (const itemRef of res.items) {
+    const url = await getDownloadURL(itemRef);
+    addImageToGallery(url);
+  }
+}
+loadGallery();
