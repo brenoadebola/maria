@@ -9,22 +9,22 @@
             font-family: Comic Sans MS, cursive, sans-serif;
             background-color: #e6f2ff;
             text-align: center;
-            margin-top: 20px; /* Reduzi a margem superior em telas menores */
-            margin-bottom: 20px; /* Adicionei margem inferior */
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
         .container {
             background-color: #ffe6f2;
             border: 3px double #ff66cc;
-            padding: 20px; /* Reduzi o padding em telas menores */
+            padding: 20px;
             border-radius: 10px;
             display: flex;
-            flex-direction: column; /* Empilha os elementos verticalmente em telas menores */
-            align-items: center; /* Centraliza os itens horizontalmente */
-            max-width: 95%; /* Largura máxima para evitar quebrar em telas pequenas */
-            margin: 10px auto; /* Centraliza o container e adiciona margem */
+            flex-direction: column;
+            align-items: center;
+            max-width: 95%;
+            margin: 10px auto;
         }
         h1 {
-            font-size: 2em; /* Reduzi o tamanho da fonte em telas menores */
+            font-size: 2em;
             margin-top: 10px;
             margin-bottom: 10px;
         }
@@ -34,8 +34,8 @@
         }
         #galeria-container {
             overflow: hidden;
-            width: 90%; /* Largura da galeria em telas menores */
-            max-width: 400px; /* Largura máxima da galeria */
+            width: 90%;
+            max-width: 400px;
             margin: 20px auto;
             border-radius: 10px;
             position: relative;
@@ -98,7 +98,6 @@
         #fileInput {
             display: none;
         }
-        /* Estilos específicos para telas menores (até 600px de largura) */
         @media (max-width: 600px) {
             h1 {
                 font-size: 1.5em;
@@ -115,7 +114,6 @@
             }
         }
 
-        /* Novo container para todas as fotos */
         .all-photos-container {
             background-color: #ffe6f2;
             border: 3px double #ff66cc;
@@ -156,6 +154,21 @@
         .photo-item img:hover {
             transform: scale(1.05);
         }
+
+        .remove-button {
+            padding: 8px 12px;
+            font-size: 0.9em;
+            cursor: pointer;
+            border: none;
+            background-color: #ff66cc;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .remove-button:hover {
+            background-color: #ffb3d9;
+        }
     </style>
 </head>
 <body onload="carregarFotos()">
@@ -188,11 +201,9 @@
     </div>
 
     <script type="module">
-        // Importe as funções que você precisa dos SDKs que você usa
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL, listAll } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, listAll, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-        // Sua configuração do Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyAv3g3-Gjp2OYLNG3PgVczwBFSQXAxcDj0",
             authDomain: "maria-18e7a.firebaseapp.com",
@@ -202,18 +213,15 @@
             appId: "1:187919316652:web:153b6f5758859e14f25109"
         };
 
-        // Inicialize o Firebase
         const app = initializeApp(firebaseConfig);
-
-        // Inicialize o Firebase Storage
         const storage = getStorage(app);
 
-        // Exporte as funções para o escopo global (window)
         window.storage = storage;
         window.ref = ref;
         window.uploadBytesResumable = uploadBytesResumable;
         window.getDownloadURL = getDownloadURL;
         window.listAll = listAll;
+        window.deleteObject = deleteObject;
 
         const frases = [
             "estou sendo perturbado pela Maria",
@@ -290,7 +298,7 @@
             }
         }
 
-        async function handleFileUpload(event) {
+        window.handleFileUpload = async function handleFileUpload(event) {
             const file = event.target.files[0];
             if (file) {
                 const storageRef = ref(window.storage, `casal/${file.name}`);
@@ -330,9 +338,32 @@
                 const img = document.createElement('img');
                 img.src = url;
 
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Remover';
+                removeButton.classList.add('remove-button');
+                removeButton.onclick = () => removerFoto(url);
+
                 photoItem.appendChild(img);
+                photoItem.appendChild(removeButton);
                 allPhotosGrid.appendChild(photoItem);
             });
+        }
+
+        async function removerFoto(urlToRemove) {
+            const imageName = urlToRemove.split('/').pop().split('?')[0];
+            const imageRef = ref(storage, `casal/${imageName}`);
+
+            try {
+                await deleteObject(imageRef);
+                console.log(`Foto ${imageName} removida com sucesso.`);
+                todasFotosCarregadas = todasFotosCarregadas.filter(url => url !== urlToRemove);
+                fotosCarregadas = fotosCarregadas.filter(url => url !== urlToRemove);
+                renderAlbum();
+                atualizarCarrossel();
+            } catch (error) {
+                console.error("Erro ao remover foto:", error);
+                alert("Ocorreu um erro ao remover a foto.");
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
