@@ -1,32 +1,50 @@
-import { getStorage, ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
-const storage = getStorage(app);
-const fileInput = document.getElementById("fileInput");
-const gallery = document.getElementById("gallery");
+import { storage, ref, uploadBytesResumable, getDownloadURL } from './firebase.js';
 
-fileInput.addEventListener("change", async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const fileRef = ref(storage, 'imagens/' + file.name);
-  await uploadBytes(fileRef, file);
-  const url = await getDownloadURL(fileRef);
-  addImageToGallery(url);
+document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('fileInput');
+    const galeriaDiv = document.getElementById('galeria');
+
+    fileInput.addEventListener('change', handleFileUpload);
 });
 
-function addImageToGallery(url) {
-  const img = document.createElement("img");
-  img.src = url;
-  img.style.width = "200px";
-  img.style.margin = "10px";
-  gallery.appendChild(img);
+async function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const storageRef = ref(storage, `casal/${file.name}`); // 'casal/' é a pasta no Storage
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                // Acompanhamento do progresso do upload (opcional)
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload is ' + progress + '% done');
+                switch (snapshot.state) {
+                    case 'paused':
+                        console.log('Upload is paused');
+                        break;
+                    case 'running':
+                        console.log('Upload is running');
+                        break;
+                }
+            },
+            (error) => {
+                // Tratar erros de upload
+                console.error("Erro no upload:", error);
+            },
+            async () => {
+                // Upload concluído com sucesso, obtenha a URL de download
+                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                console.log('File available at', downloadURL);
+                // Aqui você pode adicionar a URL à galeria ou salvar no Firestore
+                adicionarFotoGaleria(downloadURL);
+            }
+        );
+    }
 }
 
-// Listar imagens já salvas
-async function loadGallery() {
-  const listRef = ref(storage, 'imagens/');
-  const res = await listAll(listRef);
-  for (const itemRef of res.items) {
-    const url = await getDownloadURL(itemRef);
-    addImageToGallery(url);
-  }
+function adicionarFotoGaleria(url) {
+    const galeriaDiv = document.getElementById('galeria');
+    const img = document.createElement('img');
+    img.src = url;
+    galeriaDiv.appendChild(img);
 }
-loadGallery();
